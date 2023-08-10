@@ -4,7 +4,7 @@ MonoImporter:
   externalObjects: {}
   serializedVersion: 2
   defaultReferences:
-  - MaterialNanite: {fileID: 2100000, guid: 33f782b2aa4bfdf47acc57a2603181ca, type: 2}
+  - NaniteShader: {fileID: 4800000, guid: ba619dc2171a3064dbfbc1a353795e35, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
