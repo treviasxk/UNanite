@@ -1,12 +1,10 @@
 using System.Collections.Generic;
-using System.Linq;
-using UnityEditorInternal;
 using UnityEngine;
 
 public class Nanite : MonoBehaviour{
+    public Material MaterialNanite;
     int instanceCount;
     int subMeshIndex = 0;
-    bool isNanite = true;
     int cachedInstanceCount = -1;
     int cachedSubMeshIndex = -1;
     ComputeBuffer argsBuffer;
@@ -15,21 +13,32 @@ public class Nanite : MonoBehaviour{
     List<ObjectNanite> AllObject = new List<ObjectNanite>();
 
     public struct ObjectNanite{
+        public Transform coordinates;
         public Mesh mesh;
+        public Color[] viewTriangles;
         public Material material;
-        public Vector3 position;
-        public Vector3 rotation;
-        public bool active;
     }
 
-    void Start(){
+    void Start(){//
         if(NaniteEditor.isNanite){
             DontDestroyOnLoad(gameObject);
-            foreach(GameObject ob in FindObjectsOfType<GameObject>()){
-                if(ob.GetComponent<MeshFilter>()){
-                    if(ob.GetComponent<MeshRenderer>().material){
-                        AllObject.Add(new ObjectNanite(){mesh = ob.GetComponent<MeshFilter>().mesh, material = ob.GetComponent<MeshRenderer>().material, position = ob.transform.position, rotation = ob.transform.rotation.eulerAngles, active = ob.activeSelf});
-                        ob.GetComponent<MeshRenderer>().enabled = false;
+            foreach(GameObject nanite in FindObjectsOfType<GameObject>()){
+                if(nanite.GetComponent<MeshFilter>()){
+                    if(nanite.GetComponent<MeshRenderer>().material){
+                        // Generate color triangles
+                        Vector3[] vertices = nanite.GetComponent<MeshFilter>().mesh.vertices;
+                        Color[] colors = new Color[vertices.Length];
+                        for(int i = 0; i < vertices.Length; i++)
+                            colors[i] = new Color(Random.Range(0.0f, 1.0f),Random.Range(0.0f, 1.0f),Random.Range(0.0f, 1.0f),1.0f);
+
+
+                        MeshProperties[] properties = new MeshProperties[]{new MeshProperties(){mat = Matrix4x4.TRS(nanite.transform.position, Quaternion.Euler(nanite.transform.rotation.eulerAngles), nanite.transform.localScale)}};
+                        meshPropertiesBuffer = new ComputeBuffer(1, MeshProperties.Size());
+                        meshPropertiesBuffer.SetData(properties);
+                        MaterialNanite.SetBuffer("_Properties", meshPropertiesBuffer);
+
+                        AllObject.Add(new ObjectNanite(){mesh = nanite.GetComponent<MeshFilter>().mesh, material = nanite.GetComponent<MeshRenderer>().material, viewTriangles = colors, coordinates = nanite.transform});
+                        nanite.GetComponent<MeshRenderer>().enabled = false;
                     }
                 }
             }
@@ -47,15 +56,30 @@ public class Nanite : MonoBehaviour{
             if(cachedInstanceCount != instanceCount || cachedSubMeshIndex != subMeshIndex)
                 UpdateBuffers();
 
-
             // Render
-            foreach(ObjectNanite nanite in AllObject)
-                Graphics.DrawMeshInstancedIndirect(nanite.mesh, 0, nanite.material, new Bounds(nanite.position, nanite.rotation), argsBuffer);
+            foreach(ObjectNanite nanite in AllObject){
+                if(NaniteEditor.isViewTriangle)
+                    nanite.mesh.colors = nanite.viewTriangles;
+                Graphics.DrawMeshInstancedIndirect(nanite.mesh, 0, NaniteEditor.isViewTriangle ? MaterialNanite : nanite.material, new Bounds(nanite.coordinates.position, new Vector3(0,0,0)), argsBuffer);
+            }
         }
     }
 
+    // Mesh Properties struct to be read from the GPU.
+    // Size() is a convenience funciton which returns the stride of the struct.
+    private struct MeshProperties {
+        public Matrix4x4 mat;
+        public Vector4 color;
 
-    void UpdateBuffers() {
+        public static int Size() {
+            return
+                sizeof(float) * 4 * 4 + // matrix;
+                sizeof(float) * 4;      // color;
+        }
+    }
+    private ComputeBuffer meshPropertiesBuffer;
+    void UpdateBuffers(){
+
         foreach(ObjectNanite nanite in AllObject){
             if(nanite.mesh != null)
                 subMeshIndex = Mathf.Clamp(subMeshIndex, 0, nanite.mesh.subMeshCount - 1);
@@ -75,5 +99,11 @@ public class Nanite : MonoBehaviour{
             cachedInstanceCount = instanceCount;
             cachedSubMeshIndex = subMeshIndex;
         }
+    }
+
+    private void OnDisable() {
+        if(argsBuffer != null) 
+            argsBuffer.Release();
+        argsBuffer = null;
     }
 }

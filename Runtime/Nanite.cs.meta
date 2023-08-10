@@ -3,7 +3,8 @@ guid: 59a1ee8c79b998c4fa0a54fff5b9dfbc
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - MaterialNanite: {fileID: 2100000, guid: 33f782b2aa4bfdf47acc57a2603181ca, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
