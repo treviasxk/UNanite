@@ -45,7 +45,7 @@ public class NaniteEditor {
                 if(state == PlayModeStateChange.EnteredPlayMode){
                         if(!UnityEngine.GameObject.Find("Nanite")){
                                 UnityEngine.GameObject runThreadUnity = new UnityEngine.GameObject("Nanite");
-                                runThreadUnity.AddComponent<Nanite>();
+                                runThreadUnity.AddComponent<NaniteRuntime>();
                         }
                 }
         }

@@ -1,7 +1,5 @@
 # Unity Nanite
-This is the beginning of an open-source project, Nanite for Unity, here Graphics.DrawMeshInstancedIndirect is used to instantiate all objects with MeshFilter and MeshRenderer.
-
-The project is still under development, at the moment it is not recommended to use it in projects.
+This is the beginning of an open source project, Nanite for Unity, here UnityMeshSimplifier is used to reduce triangle amounts of all objects that have MeshFilter and MeshRenderer component. UnityNanite is an automatic LOD system for Unity.
 
 ![Preview](/Images/preview1.png)
 
