@@ -9,6 +9,9 @@ This is the beginning of an open source project, Nanite for Unity, here UnityMes
  - International
  Paypal: trevias@live.com
 
+## Warning
+This is still a project under development, for now it is not recommended to use it in your project.
+
 ## Installation
 
 Use [*Add package from git URL*](https://docs.unity3d.com/Manual/upm-ui-giturl.html) (in the Package Manager): 

@@ -5,7 +5,6 @@ public class NaniteEditor {
 
         const string MenuRootPath = "Nanite/";
         const string MenuItem1Path = MenuRootPath + "Enabled";
-        const string MenuItem2Path = MenuRootPath + "View Triangles";
 
         public static bool isNanite = true;
         [MenuItem(MenuItem1Path)]
@@ -17,22 +16,10 @@ public class NaniteEditor {
 
                 isNanite = Menu.GetChecked(MenuItem1Path);
         }
-        public static bool isViewTriangle = false;
-        [MenuItem(MenuItem2Path)]
-        static void ViewTrianglesNanite() {
-                if(Menu.GetChecked(MenuItem2Path))
-                        Menu.SetChecked(MenuItem2Path, false);
-                else
-                        Menu.SetChecked(MenuItem2Path, true);
-
-                isViewTriangle = Menu.GetChecked(MenuItem2Path);
-        }
-
 
         static NaniteEditor(){
                 Menu.SetChecked(MenuItem1Path, isNanite);
                 isNanite = Menu.GetChecked(MenuItem1Path);
-                isViewTriangle = Menu.GetChecked(MenuItem2Path);
                 EditorApplication.playModeStateChanged += LogPlayModeState;
         }
 

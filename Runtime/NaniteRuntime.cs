@@ -1,5 +1,9 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using UnityEngine;
+using UnityMeshSimplifier;
 
 public class NaniteRuntime : MonoBehaviour{
     
@@ -8,74 +12,56 @@ public class NaniteRuntime : MonoBehaviour{
     public Shader NaniteShader;
     static List<Nanite> Nanites = new List<Nanite>();
     class Nanite{
-        public Transform coordinates;
-        public LOD lod;
-        public string quality;
-        public Mesh mesh;
-        public Shader shader;
+        public Transform transform;
+        public int quality;
         public MeshFilter meshFilter;
-        public Color[] viewTriangles;
-        public Material material;
+        public Dictionary<int, Mesh> LODs = new Dictionary<int, Mesh>();
     }
 
-    Dictionary<string, Mesh> LODs = new Dictionary<string, Mesh>();
+    Vector3 cameraPosition;
+    void Start(){
+        DontDestroyOnLoad(gameObject);
+    }
 
-    void Start(){//
+    bool fisrt = true;
+    float timing;
+    void Update(){
         if(NaniteEditor.isNanite){
-            Nanites.Clear();
-            LODs.Clear();
-            DontDestroyOnLoad(gameObject);
-            foreach(GameObject nanite in FindObjectsOfType<GameObject>()){
-                if(nanite.GetComponent<MeshFilter>()){
-                    if(nanite.GetComponent<MeshRenderer>().material){
-                        // Generate color triangles
-                        Vector3[] vertices = nanite.GetComponent<MeshFilter>().mesh.vertices;
-                        Color[] colors = new Color[vertices.Length];
-                        for(int i = 0; i < vertices.Length; i++)
-                            colors[i] = new Color(Random.Range(0.0f, 1.0f),Random.Range(0.0f, 1.0f),Random.Range(0.0f, 1.0f),1.0f);
-                        
-                        Nanites.Add(new Nanite(){mesh = nanite.GetComponent<MeshFilter>().mesh, quality = "1", material = nanite.GetComponent<MeshRenderer>().material, meshFilter = nanite.GetComponent<MeshFilter>(), viewTriangles = colors, shader = nanite.GetComponent<MeshRenderer>().material.shader, coordinates = nanite.transform});
-                    }
-                }
+            if(fisrt){
+                fisrt = false;
+                foreach(GameObject nanite in FindObjectsOfType<GameObject>())
+                    if(nanite.GetComponent<MeshFilter>())
+                        Nanites.Add(new Nanite(){quality = 10, meshFilter = nanite.GetComponent<MeshFilter>(), transform = nanite.transform});
             }
-        }
-    }
+            cameraPosition = Camera.main.gameObject.transform.position;
+            foreach(Nanite nanite in Nanites.OrderBy(item => item.quality)){
+                float distance = Mathf.Pow(Vector3.Distance(nanite.transform.position, cameraPosition), 1);
+                float value = (1 / MaxRender) * (distance - MinRender);
+                value = 1 - Mathf.Clamp(value, 0, 1);
+                int quality = Convert.ToInt16(value * 10);
 
-    bool clear = false;
-    void Update() {
-        if(NaniteEditor.isNanite){
-            clear = true;
-            foreach(Nanite nanite in Nanites){           
-                foreach(Camera camera in Camera.allCameras){
-                    float distance = Mathf.Pow(Vector3.Distance(nanite.coordinates.position, camera.gameObject.transform.position), 1);
-                    float value = (1f / MaxRender) * (distance - MinRender);
-                    value = 1f - Mathf.Clamp(value, 0f, 1f);
-                    string quality = value.ToString("0.0");
-
-                    if(!LODs.ContainsKey(quality))
-                        LODs.Add(quality, SimplifyMeshFilter(nanite.mesh, value));
-
+                if(!nanite.LODs.ContainsKey(quality)){
+                    if(nanite.LODs.Count > 0){
+                        nanite.LODs.Add(quality, SimplifyMeshFilter(nanite.LODs.Values.OrderBy(item => item.vertexCount).Last(), value));
+                    }else
+                        if(nanite.meshFilter.mesh)
+                            nanite.LODs.Add(10, SimplifyMeshFilter(nanite.meshFilter.mesh, 10));
+                }else
                     if(nanite.quality != quality){
                         nanite.quality = quality;
-                        nanite.meshFilter.mesh = LODs[quality];
-                        if(NaniteEditor.isViewTriangle){
-                            if(nanite.material.shader != NaniteShader)
-                                nanite.material.shader = NaniteShader;
-                            nanite.mesh.colors = nanite.viewTriangles;
-                        }else
-                            if(nanite.material.shader != nanite.shader)
-                                nanite.material.shader = nanite.shader;
+                        nanite.meshFilter.mesh = nanite.LODs[quality];
                     }
-                }
             }
         }else{
-            if(clear){
-                clear = false;
+            if(!fisrt){
+                fisrt = true;
                 foreach(Nanite nanite in Nanites){
-                    nanite.meshFilter.mesh = nanite.mesh;
-                    nanite.material.shader = nanite.shader;
-                    nanite.quality = "1";
+                    if(nanite.quality != 10){
+                        nanite.quality = 10;
+                        nanite.meshFilter.mesh = nanite.LODs[10];
+                    }
                 }
+                Nanites.Clear();
             }
         }
     }
