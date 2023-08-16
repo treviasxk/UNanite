@@ -1,9 +1,9 @@
 # Unity Nanite
 This is the beginning of an open source project, Nanite for Unity, here UnityMeshSimplifier is used to reduce triangle amounts of all objects that have MeshFilter and MeshRenderer component. Unity Nanite is an automatic LOD system intelligence for Unity.
 
-![Preview](/Images/nanite_off.png.png)
+![Preview](/Images/nanite_off.png)
 
-![Preview](/Images/nanite_on.png.png)
+![Preview](/Images/nanite_on.png)
 
 ## Donate
  - Brazil
