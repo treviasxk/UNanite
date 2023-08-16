@@ -1,15 +1,15 @@
 {
   "name": "com.treviasxk.unitynanite",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "displayName": "Unity Nanite (Alpha)",
   "description": "UnityNanite is an automatic LOD system for Unity.",
   "unity": "2019.1",
   "unityRelease": "0b5",
-  "documentationUrl": "https://example.com/",
-  "changelogUrl": "https://example.com/changelog.html",
-  "licensesUrl": "https://example.com/licensing.html",
+  "documentationUrl": "https://github.com/treviasxk/UnityNanite",
+  "changelogUrl": "https://github.com/treviasxk/UnityNanite/releases",
+  "licensesUrl": "https://github.com/treviasxk/UnityNanite/blob/main/LICENSE",
   "author": {
-    "name": "treviasxk",
+    "name": "Trevias Xk",
     "email": "trevias@live.com",
     "url": "https://github.com/treviasxk"
   },

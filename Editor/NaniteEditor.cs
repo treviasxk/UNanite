@@ -23,11 +23,6 @@ public class NaniteEditor {
                 EditorApplication.playModeStateChanged += LogPlayModeState;
         }
 
-        void LoadConfig(){
-
-        }
-
-
         private static void LogPlayModeState(PlayModeStateChange state){
                 if(state == PlayModeStateChange.EnteredPlayMode){
                         if(!UnityEngine.GameObject.Find("Nanite")){
