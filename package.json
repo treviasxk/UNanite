@@ -1,19 +1,19 @@
 {
   "name": "com.treviasxk.unitynanite",
   "version": "0.1.5",
-  "displayName": "Unity Nanite (Alpha)",
+  "displayName": "Unity Nanite",
   "description": "UnityNanite is an automatic LOD system for Unity.",
   "unity": "2019.1",
   "unityRelease": "0b5",
   "documentationUrl": "https://github.com/treviasxk/UnityNanite",
   "changelogUrl": "https://github.com/treviasxk/UnityNanite/releases",
   "licensesUrl": "https://github.com/treviasxk/UnityNanite/blob/main/LICENSE",
-  "dependencies": {
-    "com.whinarn.unitymeshsimplifier": "https://github.com/Whinarn/UnityMeshSimplifier.git"
-  },
   "author": {
     "name": "Trevias Xk",
     "email": "trevias@live.com",
     "url": "https://github.com/treviasxk"
+  },
+  "dependencies": {
+    "com.whinarn.unitymeshsimplifier": "https://github.com/Whinarn/UnityMeshSimplifier.git"
   }
 }
