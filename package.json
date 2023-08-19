@@ -8,12 +8,12 @@
   "documentationUrl": "https://github.com/treviasxk/UnityNanite",
   "changelogUrl": "https://github.com/treviasxk/UnityNanite/releases",
   "licensesUrl": "https://github.com/treviasxk/UnityNanite/blob/main/LICENSE",
+  "dependencies": {
+    "com.whinarn.unitymeshsimplifier": "https://github.com/Whinarn/UnityMeshSimplifier.git"
+  },
   "author": {
     "name": "Trevias Xk",
     "email": "trevias@live.com",
     "url": "https://github.com/treviasxk"
-  },
-  "dependencies": {
-    "com.whinarn.unitymeshsimplifier": "https://github.com/Whinarn/UnityMeshSimplifier.git"
   }
 }
