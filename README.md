@@ -27,6 +27,7 @@ https://github.com/treviasxk/UnityNanite.git
 ```
 "dependencies": {
     "com.treviasxk.unitynanite": "https://github.com/treviasxk/UnityNanite.git",
+    "com.whinarn.unitymeshsimplifier": "https://github.com/Whinarn/UnityMeshSimplifier.git",
     ...
 }
 ```
