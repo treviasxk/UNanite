@@ -1,6 +1,6 @@
 {
   "name": "com.treviasxk.unitynanite",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "displayName": "Unity Nanite (Alpha)",
   "description": "UnityNanite is an automatic LOD system for Unity.",
   "unity": "2019.1",
