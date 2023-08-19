@@ -16,13 +16,7 @@ This is still a project under development, a lot is still missing, for now it is
 
 ## Installation
 
-Use [*Add package from git URL*](https://docs.unity3d.com/Manual/upm-ui-giturl.html) (in the Package Manager): 
-
-```
-https://github.com/treviasxk/UnityNanite.git
-```
-
-... or declare the package as a git dependency in `Packages/manifest.json`:
+Declare the package as a git dependency in `Packages/manifest.json`:
 
 ```
 "dependencies": {
