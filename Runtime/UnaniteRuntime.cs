@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityMeshSimplifier;
 
-public class UnaniteRuntime : MonoBehaviour{
+public class UNaniteRuntime : MonoBehaviour{
     
     public float MinRender = 5f;
     public float MaxRender = 50;
@@ -37,7 +37,7 @@ public class UnaniteRuntime : MonoBehaviour{
     [RuntimeInitializeOnLoadMethod]
     static void Init() {
         GameObject Unanite = new GameObject("Nanite");
-        Unanite.AddComponent<UnaniteRuntime>();
+        Unanite.AddComponent<UNaniteRuntime>();
     }
 
     void Start(){
@@ -58,6 +58,7 @@ public class UnaniteRuntime : MonoBehaviour{
                     Normals = unanite.normals
                 };
                 meshSimplifier.AddSubMeshTriangles(unanite.triangles);
+                meshSimplifier.PreserveUVSeamEdges = true;
                 meshSimplifier.SimplifyMesh(0.2f);
                 Unanites.Enqueue(new UnaniteObject(){instanceID = unanite.instanceID, vertices = meshSimplifier.Vertices, normals = meshSimplifier.Normals, tangents = meshSimplifier.Tangents, uv = meshSimplifier.UV1, triangles = meshSimplifier.GetSubMeshTriangles(0), value = unanite.value});
             }
@@ -80,7 +81,7 @@ public class UnaniteRuntime : MonoBehaviour{
             }
         }
 
-        if(UnaniteEditor.isNanite){
+        if(UNaniteEditor.isNanite){
             if(fisrt){
                 fisrt = false;
                 if(!Unanite){
@@ -135,7 +136,7 @@ public class UnaniteRuntime : MonoBehaviour{
         if(!ListRenderUnanites.Any(item => item.instanceID == instanceID) && !Unanites.Any(item => item.instanceID == instanceID) && nanite.meshLow == null)
             if(nanite.meshFilter.mesh){
                 ListRenderUnanites.Enqueue(new UnaniteObject{instanceID = instanceID, vertices = nanite.meshFilter.mesh.vertices,  normals = nanite.meshFilter.mesh.normals, tangents = nanite.meshFilter.mesh.tangents, uv = nanite.meshFilter.mesh.uv, triangles = nanite.meshFilter.mesh.triangles, value = 0.1f});
-                nanite.meshFilter.sharedMesh = nanite.childrenMeshFilter[0].sharedMesh;
+                nanite.meshFilter.sharedMesh ??= nanite.childrenMeshFilter[0].sharedMesh;
             }
     }
 

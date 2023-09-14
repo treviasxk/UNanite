@@ -22,7 +22,7 @@
 
 // This is a shader that demonstrates tessellation techniques and little else
 
-Shader "Unanite/Tessellation" {
+Shader "UNanite/Tessellation" {
     Properties{
         _BaseMap("Base Map (RGB) Smoothness / Alpha (A)", 2D) = "white" {}
         _BaseColor("Base Color", Color) = (1, 1, 1, 1)
@@ -107,7 +107,7 @@ Shader "Unanite/Tessellation" {
             #pragma domain Domain
             #pragma fragment Fragment
 
-            #include "UnaniteTessellation.hlsl"
+            #include "UNaniteTessellation.hlsl"
             ENDHLSL
             
         }

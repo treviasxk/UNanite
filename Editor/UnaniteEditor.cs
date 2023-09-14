@@ -2,9 +2,9 @@ using UnityEditor;
 using UnityEngine;
 
 [InitializeOnLoadAttribute]
-public class UnaniteEditor {
+public class UNaniteEditor {
 
-        const string MenuRootPath = "Unanite/";
+        const string MenuRootPath = "UNanite/";
         const string MenuItem1Path = MenuRootPath + "Enabled";
 
         public static bool isNanite = true;
@@ -18,7 +18,7 @@ public class UnaniteEditor {
                 isNanite = Menu.GetChecked(MenuItem1Path);
         }
 
-        static UnaniteEditor(){
+        static UNaniteEditor(){
                 isNanite = Menu.GetChecked(MenuItem1Path);
                 EditorApplication.playModeStateChanged += LogPlayModeState;
         }
@@ -27,7 +27,7 @@ public class UnaniteEditor {
         private static void LogPlayModeState(PlayModeStateChange state){
                 if(state == PlayModeStateChange.ExitingPlayMode){
                         if(Unanite)
-                                Unanite.GetComponent<UnaniteRuntime>().UnaniteThread.Abort();
+                                Unanite.GetComponent<UNaniteRuntime>().UnaniteThread.Abort();
                 }
         }
 }
