@@ -4,11 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Unity.VisualScripting.YamlDotNet.Core.Tokens;
 using UnityEngine;
 using UnityMeshSimplifier;
 
-public class NaniteRuntime : MonoBehaviour{
+public class UnaniteRuntime : MonoBehaviour{
     
     public float MinRender = 5f;
     public float MaxRender = 50;
@@ -22,6 +21,7 @@ public class NaniteRuntime : MonoBehaviour{
         public MeshFilter meshFilter;
         public List<MeshFilter> childrenMeshFilter;
         public Mesh meshLow;
+        public bool oward;
     }
 
     class UnaniteObject {
@@ -33,8 +33,13 @@ public class NaniteRuntime : MonoBehaviour{
         public Vector3[] normals;
         public Vector4[] tangents;
     }
-    
-    Vector3 cameraPosition;
+
+    [RuntimeInitializeOnLoadMethod]
+    static void Init() {
+        GameObject Unanite = new GameObject("Nanite");
+        Unanite.AddComponent<UnaniteRuntime>();
+    }
+
     void Start(){
         DontDestroyOnLoad(gameObject);
         Nanites.Clear();
@@ -75,34 +80,37 @@ public class NaniteRuntime : MonoBehaviour{
             }
         }
 
-        if(NaniteEditor.isNanite){
+        if(UnaniteEditor.isNanite){
             if(fisrt){
                 fisrt = false;
                 if(!Unanite){
                     Unanite = new GameObject("Unanite");
                     Unanite.transform.SetAsFirstSibling();
-                    foreach(GameObject nanite in FindObjectsOfType<GameObject>())
-                        if(nanite.GetComponent<MeshFilter>()){
-                            int code = nanite.GetComponent<MeshFilter>().sharedMesh.GetInstanceID();
-                            if(!Nanites.ContainsKey(code)){
-                                Nanites.Add(code, new Nanite(){meshFilter = nanite.GetComponent<MeshFilter>(), transform = nanite.transform, childrenMeshFilter = new List<MeshFilter>(){}});
-                            }else{
-                                int code2 = nanite.GetComponent<MeshRenderer>().sharedMaterial.GetInstanceID();
-                                if(Nanites[code].meshFilter.GetComponent<MeshRenderer>().sharedMaterial.GetInstanceID() == code2)
-                                    Nanites[code].childrenMeshFilter.Add(nanite.GetComponent<MeshFilter>());
-                                else{
-                                    if(!Nanites.ContainsKey(code2)){
-                                        Nanites.Add(code2, new Nanite(){meshFilter = nanite.GetComponent<MeshFilter>(), transform = nanite.transform, childrenMeshFilter = new List<MeshFilter>(){}});
-                                    }else{
-                                        Nanites[code2].childrenMeshFilter.Add(nanite.GetComponent<MeshFilter>());
-                                    }
+                }
+                foreach(GameObject nanite in FindObjectsOfType<GameObject>())
+                    if(nanite.GetComponent<MeshFilter>()){
+                        MeshFilter meshFilter = nanite.GetComponent<MeshFilter>();
+                        int code = meshFilter.sharedMesh.GetInstanceID();
+                        if(!Nanites.ContainsKey(code)){
+                            Nanites.Add(code, new Nanite(){meshFilter = meshFilter, transform = nanite.transform, childrenMeshFilter = new List<MeshFilter>(){}, oward = true});
+                        }else{
+                            MeshRenderer meshRenderer = Nanites[code].meshFilter.GetComponent<MeshRenderer>();
+                            int code2 = meshRenderer.sharedMaterial.GetInstanceID();
+                            if(meshRenderer.sharedMaterial.GetInstanceID() == code2)
+                                Nanites[code].childrenMeshFilter.Add(meshFilter);
+                            else{
+                                if(!Nanites.ContainsKey(code2)){
+                                    Nanites.Add(code2, new Nanite(){meshFilter = meshFilter, transform = nanite.transform, childrenMeshFilter = new List<MeshFilter>(){}});
+                                }else{
+                                    Nanites[code2].childrenMeshFilter.Add(meshFilter);
                                 }
                             }
                         }
+                    }
                 }
 
-            }
-            foreach(var nanite in Nanites){
+            
+            foreach(var nanite in Nanites){;
                 ChangeQuality(nanite.Key, nanite.Value);
             }
         }else{
@@ -126,7 +134,8 @@ public class NaniteRuntime : MonoBehaviour{
     void CreateQuality(int instanceID, Nanite nanite){
         if(!ListRenderUnanites.Any(item => item.instanceID == instanceID) && !Unanites.Any(item => item.instanceID == instanceID) && nanite.meshLow == null)
             if(nanite.meshFilter.mesh){
-                ListRenderUnanites.Enqueue(new UnaniteObject{instanceID = instanceID, vertices = nanite.meshFilter.mesh.vertices,  normals = nanite.meshFilter.mesh.normals, tangents = nanite.meshFilter.mesh.tangents, uv = nanite.meshFilter.mesh.uv, triangles = nanite.meshFilter.mesh.triangles, value = 0.1f});        
+                ListRenderUnanites.Enqueue(new UnaniteObject{instanceID = instanceID, vertices = nanite.meshFilter.mesh.vertices,  normals = nanite.meshFilter.mesh.normals, tangents = nanite.meshFilter.mesh.tangents, uv = nanite.meshFilter.mesh.uv, triangles = nanite.meshFilter.mesh.triangles, value = 0.1f});
+                nanite.meshFilter.sharedMesh = nanite.childrenMeshFilter[0].sharedMesh;
             }
     }
 
