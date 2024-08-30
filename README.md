@@ -6,9 +6,6 @@ This is the beginning of an open source project, Nanite for Unity, here UnityMes
 ![Preview](/Images/nanite_on.png)
 
 ## Donate
- - Brazil
- PIX: trevias@live.com
- - International
  Paypal: trevias@live.com
 
 ## Warning
