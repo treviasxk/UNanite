@@ -5,9 +5,6 @@ This is the beginning of an open source project, Nanite for Unity, here UnityMes
 
 ![Preview](/Images/nanite_on.png)
 
-## Donate
- Paypal: trevias@live.com
-
 ## Warning
 This is still a project under development, a lot is still missing, for now it is not recommended to use it in your project.
 
